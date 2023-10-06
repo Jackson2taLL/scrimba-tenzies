@@ -95,6 +95,11 @@ form {
   margin-bottom: 11px;
   font-size: 10px;
   text-align: center;
+  border: none;
+}
+
+.player-input:focus {
+  outline: none;
 }
 
 .roll-dice {
@@ -123,13 +128,18 @@ form {
   box-shadow: inset 0px 0px 5px -1px rgba(0, 0, 0, 0.7);
 }
 
-.score {
+.current-score {
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
+}
+
+h3,
+h4 {
+  margin: 0;
 }
 
 .scoreboard {
@@ -141,11 +151,21 @@ form {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  text-align: center;
 }
 
-h4,
-h3 {
-  margin: 0;
+.score-columns {
+  font-size: 12px;
+  display: grid;
+  grid-template: auto auto / repeat(3, 1fr);
+  gap: 0px 20px;
+  font-weight: bold;
+}
+
+.scores {
+  display: grid;
+  grid-template: auto auto / repeat(3, 1fr);
+  gap: 0px 20px;
+  font-size: 10px;
+  margin: -10px;
 }

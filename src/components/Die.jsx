@@ -7,7 +7,7 @@ const Die = (props) => {
 
   return (
     <div onClick={props.holdDie} className='die' style={styles}>
-      <h2 className='die-num'>{props.value}</h2>
+      <h2 className='die-num'>{props.playerSaved ? props.value : ''}</h2>
     </div>
   );
 };
