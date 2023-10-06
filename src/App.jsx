@@ -8,11 +8,13 @@ function App() {
   const [score, setScore] = useState(0);
   const [tenzies, setTenzies] = useState(false);
   const [firstClick, setFirstClick] = useState(0);
+  const [player, setPlayer] = useState({ name: '', saved: false });
   const [scoreBoard, setScoreBoard] = useState(
     () => JSON.parse(localStorage.getItem('scores')) || []
   );
 
   useEffect(() => {
+    // newScore()
     localStorage.setItem('scores', JSON.stringify(scoreBoard));
   }, [scoreBoard]);
 
@@ -48,6 +50,7 @@ function App() {
         )
       );
     } else {
+      setPlayer({ name: '', saved: false });
       setScore(0);
       setFirstClick(0);
       setDice(allNewDice());
@@ -64,6 +67,24 @@ function App() {
       );
     }
   }
+
+  function saveName(e) {
+    const { value } = e.target;
+    if (value.length < 11) {
+      setPlayer((prevPlayer) => ({ ...prevPlayer, name: value }));
+    }
+    console.log(player);
+    e.preventDefault();
+  }
+
+  function startGame(e) {
+    player.name
+      ? setPlayer((prevPlayer) => ({ ...prevPlayer, saved: true }))
+      : alert('input name');
+    e.preventDefault();
+  }
+
+  // async function newScore()
 
   return (
     <div>
@@ -83,15 +104,42 @@ function App() {
             />
           ))}
         </div>
-        <button onClick={() => reroll()} className='roll-dice'>
-          {tenzies ? 'Play Again?' : 'Roll'}
-        </button>
-        <div className='score'>
-          <h4>{tenzies ? 'Final ' : ''}Score</h4>
-          <h3>{score}</h3>
+        <div>
+          {!player.saved ? (
+            <form>
+              <input
+                type='text'
+                placeholder='Enter Name'
+                id='enterName'
+                className='player-input'
+                value={player.name}
+                name='topText'
+                onChange={saveName}
+                onFocus={(e) => (e.target.placeholder = '')}
+              ></input>
+              <button onClick={startGame} className='save-name-button'>
+                Start Game
+              </button>
+            </form>
+          ) : (
+            <div>
+              <button onClick={() => reroll()} className='roll-dice'>
+                {tenzies ? 'Play Again?' : 'Roll'}
+              </button>
+              <div className='score'>
+                <h4>{tenzies ? 'Final ' : ''}Score</h4>
+                <h3>{score}</h3>
+              </div>
+            </div>
+          )}
         </div>
       </main>
-      <div>{tenzies && <ScoreBoard scoreBoard={scoreBoard} />}</div>
+      <br />
+      {tenzies && (
+        <div className='scoreboard'>
+          <ScoreBoard scoreBoard={scoreBoard} />
+        </div>
+      )}
     </div>
   );
 }
