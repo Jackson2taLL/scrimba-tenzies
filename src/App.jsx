@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 
 function App() {
   const [dice, setDice] = useState(allNewDice());
-  const [score, setScore] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
   const [tenzies, setTenzies] = useState(false);
   const [firstClick, setFirstClick] = useState(0);
   const [player, setPlayer] = useState({ name: '', saved: false });
@@ -13,8 +13,10 @@ function App() {
     () => JSON.parse(localStorage.getItem('scores')) || []
   );
 
+  const sortedScores = scoreBoard.sort((a, b) => a.totalScore - b.totalScore);
+  console.log('sorted', sortedScores);
+
   useEffect(() => {
-    // newScore()
     localStorage.setItem('scores', JSON.stringify(scoreBoard));
   }, [scoreBoard]);
 
@@ -28,6 +30,42 @@ function App() {
     dupe === 0 && setFirstClick(0);
     dupe === 10 ? setTenzies(true) : setTenzies(false);
   }, [dice]);
+
+  useEffect(() => {
+    if (tenzies) {
+      if (scoreBoard.length < 10) {
+        setScoreBoard((prevScoreBoard) =>
+          // check if the current score is lower than the last place score on the scoreboard array
+          // if it is, reassign the last score as the current score
+          // then sort
+          [
+            ...prevScoreBoard,
+            {
+              playerName: player.name,
+              totalScore: currentScore,
+              numberSaved: firstClick,
+              id: nanoid(),
+            },
+          ]
+        );
+      } else if (scoreBoard[scoreBoard.length - 1].totalScore > currentScore) {
+        setScoreBoard((prevScoreBoard) =>
+          prevScoreBoard.map((prevScore) => {
+            if (prevScore.id === prevScoreBoard[prevScoreBoard.length - 1].id) {
+              return {
+                playerName: player.name,
+                totalScore: currentScore,
+                numberSaved: firstClick,
+                id: nanoid(),
+              };
+            } else {
+              return prevScore;
+            }
+          })
+        );
+      }
+    }
+  }, [tenzies]);
 
   function allNewDice() {
     const numArr = [];
@@ -43,7 +81,7 @@ function App() {
 
   function reroll() {
     if (!tenzies) {
-      setScore((prevScore) => prevScore + 1);
+      setCurrentScore((prevScore) => prevScore + 1);
       setDice((prevDice) =>
         prevDice.map((die) =>
           die.isHeld ? die : { ...die, value: Math.ceil(Math.random() * 6) }
@@ -51,14 +89,14 @@ function App() {
       );
     } else {
       setPlayer({ name: '', saved: false });
-      setScore(0);
+      setCurrentScore(0);
       setFirstClick(0);
       setDice(allNewDice());
     }
   }
 
   function holdDie(myDie) {
-    if (firstClick === 0 || firstClick === myDie.value) {
+    if (player.saved && (firstClick === 0 || firstClick === myDie.value)) {
       setFirstClick(myDie.value);
       setDice((prevDice) =>
         prevDice.map((die) =>
@@ -73,7 +111,6 @@ function App() {
     if (value.length < 11) {
       setPlayer((prevPlayer) => ({ ...prevPlayer, name: value }));
     }
-    console.log(player);
     e.preventDefault();
   }
 
@@ -84,7 +121,7 @@ function App() {
     e.preventDefault();
   }
 
-  // async function newScore()
+  // async function newScore() {}
 
   return (
     <div>
@@ -101,6 +138,7 @@ function App() {
               value={die.value}
               key={die.id}
               holdDie={() => holdDie(die)}
+              playerSaved={player.saved}
             />
           ))}
         </div>
@@ -116,6 +154,7 @@ function App() {
                 name='topText'
                 onChange={saveName}
                 onFocus={(e) => (e.target.placeholder = '')}
+                onBlurCapture={(e) => (e.target.placeholder = 'Enter Name')}
               ></input>
               <button onClick={startGame} className='save-name-button'>
                 Start Game
@@ -126,18 +165,18 @@ function App() {
               <button onClick={() => reroll()} className='roll-dice'>
                 {tenzies ? 'Play Again?' : 'Roll'}
               </button>
-              <div className='score'>
+              <div className='current-score'>
                 <h4>{tenzies ? 'Final ' : ''}Score</h4>
-                <h3>{score}</h3>
+                <h3>{currentScore}</h3>
               </div>
             </div>
           )}
         </div>
       </main>
       <br />
-      {tenzies && (
+      {scoreBoard[0] && tenzies && (
         <div className='scoreboard'>
-          <ScoreBoard scoreBoard={scoreBoard} />
+          <ScoreBoard scoreBoard={sortedScores} />
         </div>
       )}
     </div>
@@ -145,3 +184,7 @@ function App() {
 }
 
 export default App;
+
+//keep the screen size the same when changing to a smaller size
+// create a scoreboard with the top 10 scores
+// add a timer feature that multiplies with the score to provide a final score
