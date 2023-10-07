@@ -14,7 +14,6 @@ function App() {
   );
 
   const sortedScores = scoreBoard.sort((a, b) => a.totalScore - b.totalScore);
-  console.log('sorted', sortedScores);
 
   useEffect(() => {
     localStorage.setItem('scores', JSON.stringify(scoreBoard));
@@ -186,5 +185,4 @@ function App() {
 export default App;
 
 //keep the screen size the same when changing to a smaller size
-// create a scoreboard with the top 10 scores
 // add a timer feature that multiplies with the score to provide a final score
