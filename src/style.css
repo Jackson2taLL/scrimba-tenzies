@@ -62,6 +62,46 @@ main {
   font-size: 2rem;
 }
 
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.save-name-button {
+  width: 90px;
+  height: 36px;
+  background-color: #00bdfe;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 1s ease;
+  text-shadow: 0 0 2px gray;
+}
+
+.player-input {
+  height: 25px;
+  width: 90px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 1s ease;
+  margin-bottom: 11px;
+  font-size: 10px;
+  text-align: center;
+  border: none;
+}
+
+.player-input:focus {
+  outline: none;
+}
+
 .roll-dice {
   width: 90px;
   height: 36px;
@@ -73,6 +113,7 @@ main {
   cursor: pointer;
   transition: all 1s ease;
   text-shadow: 0 0 2px gray;
+  margin-bottom: 10px;
 }
 
 .roll-dice:hover {
@@ -87,16 +128,44 @@ main {
   box-shadow: inset 0px 0px 5px -1px rgba(0, 0, 0, 0.7);
 }
 
-.score {
+.current-score {
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
-h4,
-h3 {
+h3,
+h4 {
   margin: 0;
+}
+
+.scoreboard {
+  margin: auto;
+  background-color: #f5f5f5;
+  height: 400px;
+  max-width: 400px;
+  border-radius: 5px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.score-columns {
+  font-size: 12px;
+  display: grid;
+  grid-template: auto auto / repeat(3, 1fr);
+  gap: 0px 20px;
+  font-weight: bold;
+}
+
+.scores {
+  display: grid;
+  grid-template: auto auto / repeat(3, 1fr);
+  gap: 0px 20px;
+  font-size: 10px;
+  margin: -10px;
 }
